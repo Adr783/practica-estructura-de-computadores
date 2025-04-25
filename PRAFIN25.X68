@@ -1,6 +1,6 @@
 *-----------------------------------------------------------
 * Title      : PRAFIN25
-* Written by : <nombres completos de los autores>
+* Written by : Adrián González Alcalá y Adrián Reina Sorribas
 * Description: Emulador de la BUIBEX
 *-----------------------------------------------------------
     ORG $1000
