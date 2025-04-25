@@ -4,6 +4,7 @@
 * Description: Emulador de la BUIBEX
 *-----------------------------------------------------------
     ORG $1000
+N:	ECU 17 ;numero de componentes de EMEM
 EMEM:   DC.W $A00E,$500B,$C002,$A20F,$500B,$C00B,$E804,$C814,$F7FB
         DC.W $500B,$4007,$C020,$8010,$0000,$0004,$0003,$0000
 EIR:    DC.W 0 ;eregistro de instruccion
@@ -15,17 +16,22 @@ ER3:    DC.W 0 ;eregistro R3
 ER4:    DC.W 0 ;eregistro R3
 ER5:    DC.W 0 ;eregistro R3
 ESR:    DC.W 0 ;eregistro de estado (00000000 00000ZNC)
+CODE:   DS.W N ;CODIGO TEMPORAL
 
 START:
-    CLR.W EPC
+	CLR.W EPC
+	LEA.L EMEM, EPC
+	LEA.L CODE, A0 ;CODIGO TEMPORAL
+	MOVE.W #N, D0
+	SUBQ.W #1, D0
 
 FETCH:
     ;--- IFETCH: INICIO FETCH
         ;*** En esta seccion debeis introducir el codigo necesario para cargar
         ;*** en EIR la siguiente instruccion a ejecutar, indicada por el EPC,
-	    ;*** y dejar listo el EPC para que apunte a la siguiente instruccion
-	
-	        ; ESCRIBID VUESTRO CODIGO AQUI
+	;*** y dejar listo el EPC para que apunte a la siguiente instruccion
+
+	MOVE.W (EPC)+, EIR
         
     ;--- FFETCH: FIN FETCH
     
@@ -36,11 +42,16 @@ FETCH:
         ;*** DECOD, llamar a la subrutina, y vaciar la pila correctamente,
         ;*** almacenando el resultado de la decodificacion en D1
 
-    	    ; ESCRIBID VUESTRO CODIGO AQUI    	    
+	MOVE.W EIR, -(SP)
+
+	JSR DECOD
+
+	MOVE.W (SP)+, D1
         
     ;--- FBRDECOD: FIN SALTO A DECOD
     
-    
+	MOVE.W D1, (A0)+ ;CODIGO TEMPORAL
+	DBRA D0, FETCH ;Bucle de N iteraciones
     
     ;--- IBREXEC: INICIO SALTO A FASE DE EJECUCION
         ;*** Esta seccion se usa para saltar a la fase de ejecucion
