@@ -42,10 +42,12 @@ FETCH:
         ;*** DECOD, llamar a la subrutina, y vaciar la pila correctamente,
         ;*** almacenando el resultado de la decodificacion en D1
 
+	SUBQ.W #1, SP
 	MOVE.W EIR, -(SP)
 
 	JSR DECOD
 
+	ADDQ.W #1, SP
 	MOVE.W (SP)+, D1
         
     ;--- FBRDECOD: FIN SALTO A DECOD
