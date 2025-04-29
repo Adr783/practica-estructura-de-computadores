@@ -115,7 +115,12 @@ EINC:
         ;*** decodificacion, que debera ser de libreria, siguiendo la interfaz
         ;*** especificada en el enunciado
 DECOD:
-	        ; ESCRIBID VUESTRO CODIGO AQUI
+	MOVE.W D0, -(SP)
+
+
+
+	MOVE.W (SP)+, D0
+	RTS
 
     ;--- FDECOD: FIN DECOD
     END    START
