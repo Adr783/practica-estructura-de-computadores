@@ -121,7 +121,26 @@ DECOD:
 	BTST.W #15, D0
 	BNE I
 O:
-
+	BTST.W #14, D0
+	BNE II
+OO:
+	MOVE.W #0, 10(SP) ;guarda id 0
+	BRA FIN_DECOD
+OI:
+	BTST.W #13, D0
+	BNE OII
+OIO:
+	BTST.W #12, D0
+	BNE OIOI
+OIOO:
+	MOVE.W #1, 10(SP) ;guarda id 1
+	BRA FIN_DECOD
+OIOI:
+	MOVE.W #2, 10(SP) ;guarda id 2
+	BRA FIN_DECOD
+OII:
+	MOVE.W #3, 10(SP) ;guarda id 3
+	BRA FIN_DECOD
 
 I:
 
