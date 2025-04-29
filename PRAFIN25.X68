@@ -117,8 +117,16 @@ EINC:
 DECOD:
 	MOVE.W D0, -(SP)
 
+	MOVE.W 8(SP), D0
+	BTST.W #15, D0
+	BNE I
+O:
 
 
+I:
+
+
+FIN_DECOD:
 	MOVE.W (SP)+, D0
 	RTS
 
