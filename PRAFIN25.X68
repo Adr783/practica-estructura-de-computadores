@@ -49,11 +49,13 @@ FETCH:
 
 	ADDQ.W #1, SP
 	MOVE.W (SP)+, D1
-        
-    ;--- FBRDECOD: FIN SALTO A DECOD
-    
+
 	MOVE.W D1, (A0)+ ;CODIGO TEMPORAL
 	DBRA D0, FETCH ;Bucle de N iteraciones
+
+    ;--- FBRDECOD: FIN SALTO A DECOD
+
+
     
     ;--- IBREXEC: INICIO SALTO A FASE DE EJECUCION
         ;*** Esta seccion se usa para saltar a la fase de ejecucion
