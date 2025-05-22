@@ -115,22 +115,22 @@ EINC:
         ;*** decodificacion, que debera ser de libreria, siguiendo la interfaz
         ;*** especificada en el enunciado
 DECOD:
-	MOVE.W D0, -(SP)
+	MOVE.L D0, -(SP)
 
-	MOVE.W 8(SP), D0
-	BTST.W #15, D0
+	MOVE.L 8(SP), D0
+	BTST.L #15, D0
 	BNE I
 O:
-	BTST.W #14, D0
-	BNE II
+	BTST.L #14, D0
+	BNE OI
 OO:
 	MOVE.W #0, 10(SP) ;guarda id 0
 	BRA FIN_DECOD
 OI:
-	BTST.W #13, D0
+	BTST.L #13, D0
 	BNE OII
 OIO:
-	BTST.W #12, D0
+	BTST.L #12, D0
 	BNE OIOI
 OIOO:
 	MOVE.W #1, 10(SP) ;guarda id 1
@@ -146,7 +146,7 @@ I:
 
 
 FIN_DECOD:
-	MOVE.W (SP)+, D0
+	MOVE.L (SP)+, D0
 	RTS
 
     ;--- FDECOD: FIN DECOD
