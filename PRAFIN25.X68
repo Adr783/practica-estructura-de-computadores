@@ -19,11 +19,8 @@ ESR:    DC.W 0 ;eregistro de estado (00000000 00000ZNC)
 CODE:   DS.W N ;CODIGO TEMPORAL
 
 START:
-	CLR.W EPC
-	LEA.L EMEM, EPC
-	LEA.L CODE, A0 ;CODIGO TEMPORAL
-	MOVE.W #N, D0
-	SUBQ.W #1, D0
+
+
 
 FETCH:
     ;--- IFETCH: INICIO FETCH
@@ -31,8 +28,13 @@ FETCH:
         ;*** en EIR la siguiente instruccion a ejecutar, indicada por el EPC,
 	;*** y dejar listo el EPC para que apunte a la siguiente instruccion
 
-	MOVE.W (EPC)+, EIR
-        
+	MOVE.W EPC, D0
+    	MULU.W #2, D0
+    	ADD.W D0, A0
+	MOVE.W EMEM(A0), EIR
+	
+	ADDQ.W #1, EPC
+
     ;--- FFETCH: FIN FETCH
     
     
@@ -42,18 +44,17 @@ FETCH:
         ;*** DECOD, llamar a la subrutina, y vaciar la pila correctamente,
         ;*** almacenando el resultado de la decodificacion en D1
 
-	SUBQ.W #1, SP
+	SUBQ.W #2, SP
 	MOVE.W EIR, -(SP)
 
 	JSR DECOD
 
-	ADDQ.W #1, SP
+	ADDQ.W #2, SP
 	MOVE.W (SP)+, D1
 
     ;--- FBRDECOD: FIN SALTO A DECOD
 
-	MOVE.W D1, (A0)+ ;CODIGO TEMPORAL
-	DBRA D0, FETCH ;Bucle de N iteraciones
+
     
     ;--- IBREXEC: INICIO SALTO A FASE DE EJECUCION
         ;*** Esta seccion se usa para saltar a la fase de ejecucion
