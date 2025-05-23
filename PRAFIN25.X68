@@ -226,6 +226,14 @@ GUARDA_ESR: 	;Guarda el contenido de los 3 últimos bits del registro SR en el
 	AND.W $0007, D6
 	MOVE.W D6, (0)EIR
 	RTS
+
+GUARDA_ZyN: 	;Guarda el contenido de los 2 últimos bits del registro SR, que 
+            	;representan las flags Z y N, en el eregistro ESR. Para ello
+            	;utiliza D6.
+	MOVE.W SR, D6
+	AND.W $0003, D6
+	MOVE.W D6, ESR
+	RTS
         
     ;--- FSUBR: FIN SUBRUTINAS
     
