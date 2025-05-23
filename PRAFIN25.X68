@@ -69,7 +69,6 @@ JMPLIST:
     JMP EJMN
     JMP ESTO
     JMP ELOA
-
     JMP ETRA
     JMP EADD
     JMP ESUB
@@ -91,8 +90,34 @@ EJMZ:
 EJMN:
 ESTO:
 ELOA:
+
 ETRA:
+	MOVE.W EIR, D3
+	AND.W $0038, D3
+	LSR.W #3, D3    ;D3 = 0000000000000aaa
+	JSR EXTRAE      ;D4 = eregistro aaa
+
+	MOVE.W EIR, D3
+	AND.W $0007, D3 ;D3 = 0000000000000bbb
+	JSR CARGA       ;eregistro bbb = D4
+    
+	BRA FETCH
 EADD:
+	MOVE.W EIR, D3
+	AND.W $0038, D3
+	LSR.W #3, D3    ;D3 = 0000000000000aaa
+	JSR EXTRAE
+	MOVE.W D4, D5   ;D5 = eregistro aaa
+	
+	MOVE.W EIR, D3
+	AND.W $0007, D3 ;D3 = 0000000000000bbb
+	JSR EXTRAE      ;D4 = eregistro bbb
+	
+	ADD.W D5, D4
+	JSR GUARDA_EIR
+	JSR CARGA       ;eregistro bbb = D4 + D5
+	
+	BRA FETCH
 ESUB:
 ECMP:
 ENAN:
@@ -106,7 +131,26 @@ EINC:
         ;*** Aqui debeis incluir las subrutinas que necesite vuestra solucion
         ;*** SALVO DECOD, que va en la siguiente seccion
 
-	        ; ESCRIBID VUESTRO CODIGO AQUI
+EXTRAE: 	;Extrae a D4 el contenido del eregistro cuyo índice está definido por
+		;el contenido de D3. Para ello utiliza A3.
+	MULU.W #2, D3
+	MOVE.W D3, A3
+	MOVE.W ET0(A3), D4
+	RTS
+	
+CARGA:		;Carga el contenido de D4 en el eregistro cuyo índice está definido por
+		;el contenido de D3. Para ello utiliza A3.
+	MULU.W #2, D3
+	MOVE.W D3, A3
+	MOVE.W D4, ET0(A3)
+	RTS
+	
+GUARDA_ESR: 	;Guarda el contenido de los 3 últimos bits del registro SR en el
+		;eregistro ESR. Para ello utiliza D6.
+	MOVE.W SR, D6
+	AND.W $0007, D6
+	MOVE.W D6, (0)EIR
+	RTS
         
     ;--- FSUBR: FIN SUBRUTINAS
     
