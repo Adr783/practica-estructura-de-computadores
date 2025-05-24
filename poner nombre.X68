@@ -304,7 +304,7 @@ IIOI:
 IIOIO:
 	MOVE.W #8, 10(SP) ;guarda id 8
 	BRA FIN_DECOD
-II0II:
+IIOII:
 	MOVE.W #9, 10(SP) ;guarda id 9
 	BRA FIN_DECOD
 III:
