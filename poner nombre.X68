@@ -13,8 +13,8 @@ ET0:    DC.W 0 ;eregistro T0
 ET1:    DC.W 0 ;eregistro T1
 ER2:    DC.W 0 ;eregistro R2
 ER3:    DC.W 0 ;eregistro R3
-ER4:    DC.W 0 ;eregistro R3
-ER5:    DC.W 0 ;eregistro R3
+ER4:    DC.W 0 ;eregistro R4
+ER5:    DC.W 0 ;eregistro R5
 ESR:    DC.W 0 ;eregistro de estado (00000000 00000ZNC)
 CODE:   DS.W N ;CODIGO TEMPORAL
 
