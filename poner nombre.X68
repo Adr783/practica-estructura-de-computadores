@@ -246,20 +246,20 @@ GUARDA_ZyN: 	;Guarda el contenido de los 2 últimos bits del registro SR, que
 DECOD:
 	MOVE.L D0, -(SP)
 
-	MOVE.L 8(SP), D0
-	BTST.L #15, D0
+	MOVE.W 8(SP), D0
+	BTST #15, D0
 	BNE I
 O:
-	BTST.L #14, D0
+	BTST #14, D0
 	BNE OI
 OO:
 	MOVE.W #0, 10(SP) ;guarda id 0
 	BRA FIN_DECOD
 OI:
-	BTST.L #13, D0
+	BTST #13, D0
 	BNE OII
 OIO:
-	BTST.L #12, D0
+	BTST #12, D0
 	BNE OIOI
 OIOO:
 	MOVE.W #1, 10(SP) ;guarda id 1
@@ -272,55 +272,55 @@ OII:
 	BRA FIN_DECOD
 
 I:
-	BTST.L #14, D0
+	BTST #14, D0
 	BNE II
 IO:
-	BTST.L #13, D0
+	BTST #13, D0
 	BNE IOI
 IOO: 	
-	MOVE.W #4, 10(SP)
+	MOVE.W #4, 10(SP) ;guarda id 4
 	BRA FIN_DECOD
 IOI:
-	MOVE.W #5, 10(SP)
+	MOVE.W #5, 10(SP) ;guarda id 5
 	BRA FIN_DECOD
 II: 	
-	BTST.L #13, D0
+	BTST #13, D0
 	BNE III
 IIO:
-	BTST.L #12, D0
+	BTST #12, D0
 	BNE IIOI
 IIOO:
-	BTST.L #11, D0
+	BTST #11, D0
 	BNE IIOOI
 IIOOO:
-	MOVE.W #6, 10(SP)
+	MOVE.W #6, 10(SP) ;guarda id 6
 	BRA FIN_DECOD
 IIOOI:
-	MOVE.W #7, 10(SP)
+	MOVE.W #7, 10(SP) ;guarda id 7
 	BRA FIN_DECOD
 IIOI:
-	BTST.L #11, D0
+	BTST #11, D0
 	BNE IIOII
 IIOIO:
-	MOVE.W #8, 10(SP)
+	MOVE.W #8, 10(SP) ;guarda id 8
 	BRA FIN_DECOD
 II0II:
-	MOVE.W #9, 10(SP)
+	MOVE.W #9, 10(SP) ;guarda id 9
 	BRA FIN_DECOD
 III:
-	BTST.L #12, D0
+	BTST #12, D0
 	BNE IIII
 IIIO:
-	BTST.L #11, D0
+	BTST #11, D0
 	BNE IIIOI
 IIIOO:
-	MOVE.W #10, 10(SP)
+	MOVE.W #10, 10(SP) ;guarda id 10
 	BRA FIN_DECOD
 IIIOI:
-	MOVE.W #11, 10(SP)
+	MOVE.W #11, 10(SP) ;guarda id 11
 	BRA FIN_DECOD
 IIII:
-	MOVE.W #12, 10(SP)
+	MOVE.W #12, 10(SP) ;guarda id 12
 	BRA FIN_DECOD
 
 FIN_DECOD:
