@@ -206,35 +206,70 @@ EINC:
         ;*** Aqui debeis incluir las subrutinas que necesite vuestra solucion
         ;*** SALVO DECOD, que va en la siguiente seccion
 
-EXTRAE: 	;Extrae a D4 el contenido del eregistro cuyo índice está definido por
-		;el contenido de D3. Para ello utiliza A3.
-	MULU.W #2, D3
-	MOVE.W D3, A3
-	MOVE.W ET0(A3), D4
-	RTS
-	
-CARGA:		;Carga el contenido de D4 en el eregistro cuyo índice está definido por
-		;el contenido de D3. Para ello utiliza A3.
-	MULU.W #2, D3
-	MOVE.W D3, A3
-	MOVE.W D4, ET0(A3)
-	RTS
-	
-GUARDA_ESR: 	;Guarda el contenido de los 3 últimos bits del registro SR en el
-		;eregistro ESR. Para ello utiliza D6.
-	MOVE.W SR, D6
-	AND.W $0007, D6
-	MOVE.W D6, (0)EIR
-	RTS
+EXTRAE: ;Extrae a D4 el contenido del eregistro cuyo índice está definido por
+        ;el contenido de D3. Para ello utiliza A2 y se multiplica el contenido
+        ;de D3 por 4 porque cada instrucción "MOVE.W etiqueta, D4" ocupa 4
+        ;bytes por ser los registros direccionamiento corto.
+    MOVE.W D3, -(SP)
+    
+    MULU #4, D3
+    MOVEA.L D3, A2
+    JMP LISTA_EXTRAE(A2)
+LISTA_EXTRAE
+    MOVE.W ET0, D4
+    MOVE.W ET1, D4
+    MOVE.W ER2, D4
+    MOVE.W ER3, D4
+    MOVE.W ER4, D4
+    MOVE.W ER5, D4
+    
+    MOVE.W (SP)+, D3
+    RTS
 
-GUARDA_ZyN: 	;Guarda el contenido de los 2 últimos bits del registro SR, que 
-            	;representan las flags Z y N, en el eregistro ESR. Para ello
-            	;utiliza D6.
-	MOVE.W SR, D6
-	AND.W $0003, D6
-	MOVE.W D6, ESR
-	RTS
+CARGA:  ;Carga el contenido de D4 en el eregistro cuyo índice está definido por
+        ;el contenido de D3. Para ello utiliza A2 y se multiplica el contenido
+        ;de D3 por 4 porque cada instrucción "MOVE.W D4, etiqueta" ocupa 4
+        ;bytes por ser los registros direccionamiento corto.
+    MOVE.W D3, -(SP)
         
+    MULU #4, D3
+    MOVEA.L D3, A2
+    JMP LISTA_CARGA(A2)
+LISTA_CARGA
+    MOVE.W D4, ET0
+    MOVE.W D4, ET1
+    MOVE.W D4, ER2
+    MOVE.W D4, ER3
+    MOVE.W D4, ER4
+    MOVE.W D4, ER5
+    
+    MOVE.W (SP)+, D3
+    RTS
+    
+GUARDA_ESR: ;Guarda el contenido de los 3 últimos bits del registro SR, que 
+            ;representan las flags C, Z y N, en el eregistro ESR.
+    MOVE.L D0, (-SP)
+    CLR D0
+    
+    MOVE.W SR, D0
+    AND.W $0007, D0
+    MOVE.W D0, ESR
+    
+    MOVE.L (SP)+, D0
+    RTS
+    
+GUARDA_ZyN: ;Guarda el contenido de los 2 últimos bits del registro SR, que 
+            ;representan las flags Z y N, en el eregistro ESR.
+    MOVE.L D0, (-SP)
+    CLR D0
+
+    MOVE.W SR, D6
+    AND.W $0003, D6
+    MOVE.W D6, ESR
+    
+    MOVE.L (SP)+, D0
+    RTS
+
     ;--- FSUBR: FIN SUBRUTINAS
     
     
