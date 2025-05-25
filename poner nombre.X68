@@ -270,8 +270,8 @@ GUARDA_ZyN: ;Guarda el contenido de los 2 últimos bits del registro SR, que
     MOVE.L D0, (-SP)
     CLR D0
 
-    MOVE.W SR, D6
-    AND.W $0003, D6
+    MOVE.W SR, D0
+    AND.W $0003, D0
     MOVE.W D6, ESR
     
     MOVE.L (SP)+, D0
