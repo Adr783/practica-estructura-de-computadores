@@ -92,111 +92,126 @@ ESTO:
 ELOA:
 
 ETRA:
-	MOVE.W EIR, D3
-	AND.W $0038, D3
-	LSR.W #3, D3    ;D3 = 0000000000000aaa
-	JSR EXTRAE      ;D4 = eregistro aaa
-	
-	MOVE.W EIR, D3
-	AND.W $0007, D3 ;D3 = 0000000000000bbb
-	JSR CARGA       ;eregistro bbb = D4
-	
-	BRA FETCH
+    MOVE.W EIR, D3
+    AND.W $0038, D3
+    LSR.W #3, D3    ;D3 = 0000000000000aaa
+    JSR EXTRAE      ;D4 = eregistro aaa
+    
+    MOVE.W EIR, D3
+    AND.W $0007, D3 ;D3 = 0000000000000bbb
+    JSR CARGA       ;eregistro bbb = D4
+    
+    BRA FETCH
 EADD:
-	MOVE.W EIR, D3
-	AND.W $0038, D3
-	LSR.W #3, D3    ;D3 = 0000000000000aaa
-	JSR EXTRAE
-	MOVE.W D4, D5   ;D5 = eregistro aaa
-	
-	MOVE.W EIR, D3
-	AND.W $0007, D3 ;D3 = 0000000000000bbb
-	JSR EXTRAE      ;D4 = eregistro bbb
-	
-	ADD.W D5, D4
-	JSR GUARDA_ESR
-	JSR CARGA       ;eregistro bbb = D4 + D5
-	
-	BRA FETCH
+    MOVE.W EIR, D3
+    AND.W $0038, D3
+    LSR.W #3, D3    ;D3 = 0000000000000aaa
+    JSR EXTRAE
+    MOVE.W D4, D5   ;D5 = eregistro aaa
+    
+    MOVE.W EIR, D3
+    AND.W $0007, D3 ;D3 = 0000000000000bbb
+    JSR EXTRAE      ;D4 = eregistro bbb
+    
+    ADD.W D5, D4
+    JSR GUARDA_ESR
+    
+    MOVE.W EIR, D3
+    AND.W $0007, D3 ;D3 = 0000000000000bbb
+    JSR CARGA       ;eregistro bbb = D4 + D5
+    
+    BRA FETCH
 ESUB:
-	MOVE.W EIR, D3
-	AND.W $0038, D3
-	LSR.W #3, D3    ;D3 = 0000000000000aaa
-	JSR EXTRAE
-	MOVE.W D4, D5   ;D5 = eregistro aaa
-	
-	MOVE.W EIR, D3
-	AND.W $0007, D3 ;D3 = 0000000000000bbb
-	JSR EXTRAE      ;D4 = eregistro bbb
-	
-	NOT.W D5
-	ADDQ.W #1, D5
-	ADD.W D5, D4
-	JSR GUARDA_ESR
-	JSR CARGA       ;eregistro bbb = D4 + (NOT(D5) + 1)
-	
-	BRA FETCH
+    MOVE.W EIR, D3
+    AND.W $0038, D3
+    LSR.W #3, D3    ;D3 = 0000000000000aaa
+    JSR EXTRAE
+    MOVE.W D4, D5   ;D5 = eregistro aaa
+    
+    MOVE.W EIR, D3
+    AND.W $0007, D3 ;D3 = 0000000000000bbb
+    JSR EXTRAE      ;D4 = eregistro bbb
+    
+    NOT.W D5
+    ADDQ.W #1, D5
+    ADD.W D5, D4
+    JSR GUARDA_ESR
+    
+    MOVE.W EIR, D3
+    AND.W $0007, D3 ;D3 = 0000000000000bbb
+    JSR CARGA       ;eregistro bbb = D4 + (NOT(D5) + 1)
+    
+    BRA FETCH
 ECMP:
-	MOVE.W EIR, D3
-	AND.W $0038, D3
-	LSR.W #3, D3    ;D3 = 0000000000000aaa
-	JSR EXTRAE
-	MOVE.W D4, D5   ;D5 = eregistro aaa
-	
-	MOVE.W EIR, D3
-	AND.W $0007, D3 ;D3 = 0000000000000bbb
-	JSR EXTRAE      ;D4 = eregistro bbb
-	
-	NOT.W D5
-	ADDQ.W #1, D5
-	ADD.W D5, D4    ;D4 = D4 + (NOT(D5) + 1)
-	JSR GUARDA_ESR
-	
-	BRA FETCH
+    MOVE.W EIR, D3
+    AND.W $0038, D3
+    LSR.W #3, D3    ;D3 = 0000000000000aaa
+    JSR EXTRAE
+    MOVE.W D4, D5   ;D5 = eregistro aaa
+    
+    MOVE.W EIR, D3
+    AND.W $0007, D3 ;D3 = 0000000000000bbb
+    JSR EXTRAE      ;D4 = eregistro bbb
+    
+    NOT.W D5
+    ADDQ.W #1, D5
+    ADD.W D5, D4    ;D4 = D4 + (NOT(D5) + 1)
+    JSR GUARDA_ESR
+    
+    BRA FETCH
 ENAN:
-	MOVE.W EIR, D3
-	AND.W $0038, D3
-	LSR.W #3, D3    ;D3 = 0000000000000aaa
-	JSR EXTRAE
-	MOVE.W D4, D5   ;D5 = eregistro aaa
-	
-	MOVE.W EIR, D3
-	AND.W $0007, D3 ;D3 = 0000000000000bbb
-	JSR EXTRAE      ;D4 = eregistro bbb
-	
-	AND.W D4, D5
-	NOT.W D4
-	JSR GUARDA_ZyN
-	JSR CARGA       ;eregistro bbb = NOT(D4 AND D5)
-	
-	BRA FETCH
+    MOVE.W EIR, D3
+    AND.W $0038, D3
+    LSR.W #3, D3    ;D3 = 0000000000000aaa
+    JSR EXTRAE
+    MOVE.W D4, D5   ;D5 = eregistro aaa
+    
+    MOVE.W EIR, D3
+    AND.W $0007, D3 ;D3 = 0000000000000bbb
+    JSR EXTRAE      ;D4 = eregistro bbb
+    
+    AND.W D4, D5
+    NOT.W D4
+    JSR GUARDA_ZyN
+    
+    MOVE.W EIR, D3
+    AND.W $0007, D3 ;D3 = 0000000000000bbb
+    JSR CARGA       ;eregistro bbb = NOT(D4 AND D5)
+    
+    BRA FETCH
 ESET:
-	MOVE.W EIR, D7
-	AND.W $07F8, D7
-	LSR.W #3, D7    ;D7 = 00000000cccccccc
-	EXT D7
-	JSR GUARDA_ZyN
-	
-	MOVE.W EIR, D3
-	AND.W $0007, D3 ;D3 = 0000000000000bbb
-	JSR CARGA       ;eregistro bbb = D4
-	
-	BRA FETCH
+    MOVE.W EIR, D7
+    AND.W $07F8, D7
+    LSR.W #3, D7    ;D7 = 00000000cccccccc
+    EXT D7
+    JSR GUARDA_ZyN
+    
+    MOVE.W EIR, D3
+    AND.W $0007, D3 ;D3 = 0000000000000bbb
+    
+    MOVE.W EIR, D3
+    AND.W $0007, D3 ;D3 = 0000000000000bbb
+    JSR CARGA       ;eregistro bbb = D4
+    
+    BRA FETCH
 EINC:
-	MOVE.W EIR, D3
-	AND.W $0007, D3 ;D3 = 0000000000000bbb
-	JSR EXTRAE      ;D4 = eregistro bbb
-	
-	MOVE.W EIR, D7
-	AND.W $07F8, D7
-	LSR.W #3, D7    ;D7 = 00000000cccccccc
-	EXT D7
-	
-	ADD.W D7, D4
-	JSR GUARDA_ESR
-	JSR CARGA       ;eregistro bbb = D4 + D7
-	
-	BRA FETCH
+    MOVE.W EIR, D3
+    AND.W $0007, D3 ;D3 = 0000000000000bbb
+    JSR EXTRAE      ;D4 = eregistro bbb
+    
+    MOVE.W EIR, D7
+    AND.W $07F8, D7
+    LSR.W #3, D7    ;D7 = 00000000cccccccc
+    EXT D7
+    
+    ADD.W D7, D4
+    JSR GUARDA_ESR
+    
+    MOVE.W EIR, D3
+    AND.W $0007, D3 ;D3 = 0000000000000bbb
+    JSR CARGA       ;eregistro bbb = D4 + D7
+    
+    BRA FETCH
 
     ;--- FEXEC: FIN EJECUCION
     
