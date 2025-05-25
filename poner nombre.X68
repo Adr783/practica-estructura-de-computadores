@@ -253,24 +253,42 @@ LISTA_CARGA
     MOVE.W D4, ER5
     RTS
     
-GUARDA_ESR: ;Guarda el contenido de los 3 últimos bits del registro SR, que 
-            ;representan las flags C, Z y N, en el eregistro ESR.
-    MOVE.W D0, (-SP)
+GUARDA_ESR: ;Guarda las flags Z, N y C del registro SR como los tres últimos
+            ;bits del eregistro ESR. Para ello utiliza D6.
+    MOVE.W SR, D6   ;D6 = xxxxxxxxxxxxNZxC
+    MOVE.W D0, -(SP)
+
+    AND.W $000D, D6 ;D6 = 000000000000NZ0C
     
-    MOVE.W SR, D0
-    AND.W $0007, D0
-    MOVE.W D0, ESR
+    MOVE.W D6, D0
+    AND.W $0008, D0 ;D0 = 000000000000N000
+    LSR.W #2, D0    ;D0 = 00000000000000N0
+    AND.W $0005, D6 ;D6 = 0000000000000Z0C
+    OR.W D6, D0
+    
+    MOVE.W D0, ESR  ;ESR = 0000000000000ZNC
     
     MOVE.W (SP)+, D0
     RTS
     
-GUARDA_ZyN: ;Guarda el contenido de los 2 últimos bits del registro SR, que 
-            ;representan las flags Z y N, en el eregistro ESR.
-    MOVE.W D0, (-SP)
+GUARDA_ZyN: ;Guarda las flags Z y N del registro SR como los dos últimos bits
+            ;del eregistro ESR. Para ello utiliza D6.
+    MOVE.W SR, D6   ;D6 = xxxxxxxxxxxxNZxC
+    MOVE.W D0, -(SP)
 
-    MOVE.W SR, D0
-    AND.W $0003, D0
-    MOVE.W D6, ESR
+    AND.W $000C, D6 ;D6 = 000000000000NZ00
+    
+    MOVE.W D6, D0
+    AND.W $0008, D0 ;D0 = 000000000000N000
+    LSR.W #2, D0    ;D0 = 00000000000000N0
+    AND.W $0004, D6 ;D6 = 0000000000000Z00
+    OR.W D6, D0
+    
+    MOVE.W ESR, D6
+    AND.W $0001, D6 ;D6 = 000000000000000(C anterior)
+    OR.W D6, D0
+    
+    MOVE.W D0, ESR  ;ESR = 0000000000000ZN(C anterior)
     
     MOVE.W (SP)+, D0
     RTS
