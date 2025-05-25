@@ -219,10 +219,10 @@ ENAN:
     
     BRA FETCH
 ESET:
-    MOVE.W EIR, D7
-    AND.W #$07F8, D7
-    LSR.W #3, D7    ;D7 = 00000000cccccccc
-    EXT D7
+    MOVE.W EIR, D6
+    AND.W #$07F8, D6
+    LSR.W #3, D6    ;D6 = 00000000cccccccc
+    EXT D6
     JSR GUARDA_ZyN
     
     MOVE.W EIR, D3
@@ -238,17 +238,17 @@ EINC:
     AND.W #$0007, D3 ;D3 = 0000000000000bbb
     JSR EXTRAE      ;D4 = eregistro bbb
     
-    MOVE.W EIR, D7
-    AND.W #$07F8, D7
-    LSR.W #3, D7    ;D7 = 00000000cccccccc
-    EXT D7
+    MOVE.W EIR, D6
+    AND.W #$07F8, D6
+    LSR.W #3, D6    ;D6 = 00000000cccccccc
+    EXT D6
     
-    ADD.W D7, D4
+    ADD.W D6, D4
     JSR GUARDA_ESR
     
     MOVE.W EIR, D3
     AND.W #$0007, D3 ;D3 = 0000000000000bbb
-    JSR CARGA       ;eregistro bbb = D4 + D7
+    JSR CARGA       ;eregistro bbb = D4 + D6
     
     BRA FETCH
 
@@ -307,18 +307,18 @@ FIN_CARGA:
     RTS
     
 GUARDA_ESR: ;Guarda las flags Z, N y C del registro SR como los tres últimos
-            ;bits del eregistro ESR. Para ello utiliza D6.
-    MOVE.W SR, D6   ;D6 = xxxxxxxxxxxxNZxC
+            ;bits del eregistro ESR. Para ello utiliza D2.
+    MOVE.W SR, D2   ;D2 = xxxxxxxxxxxxNZxC
     MOVE.L D0, -(SP)
     CLR D0
 
-    AND.W #$000D, D6 ;D6 = 000000000000NZ0C
+    AND.W #$000D, D2 ;D2 = 000000000000NZ0C
     
-    MOVE.W D6, D0
+    MOVE.W D2, D0
     AND.W #$0008, D0 ;D0 = 000000000000N000
     LSR.W #2, D0    ;D0 = 00000000000000N0
-    AND.W #$0005, D6 ;D6 = 0000000000000Z0C
-    OR.W D6, D0
+    AND.W #$0005, D2 ;D2 = 0000000000000Z0C
+    OR.W D2, D0
     
     MOVE.W D0, ESR  ;ESR = 0000000000000ZNC
     
@@ -326,22 +326,22 @@ GUARDA_ESR: ;Guarda las flags Z, N y C del registro SR como los tres últimos
     RTS
     
 GUARDA_ZyN: ;Guarda las flags Z y N del registro SR como los dos últimos bits
-            ;del eregistro ESR. Para ello utiliza D6.
-    MOVE.W SR, D6   ;D6 = xxxxxxxxxxxxNZxC
+            ;del eregistro ESR. Para ello utiliza D2.
+    MOVE.W SR, D2   ;D2 = xxxxxxxxxxxxNZxC
     MOVE.L D0, -(SP)
     CLR D0
 
-    AND.W #$000C, D6 ;D6 = 000000000000NZ00
+    AND.W #$000C, D2 ;D2 = 000000000000NZ00
     
-    MOVE.W D6, D0
+    MOVE.W D2, D0
     AND.W #$0008, D0 ;D0 = 000000000000N000
     LSR.W #2, D0    ;D0 = 00000000000000N0
-    AND.W #$0004, D6 ;D6 = 0000000000000Z00
-    OR.W D6, D0
+    AND.W #$0004, D2 ;D2 = 0000000000000Z00
+    OR.W D2, D0
     
-    MOVE.W ESR, D6
-    AND.W #$0001, D6 ;D6 = 000000000000000(C anterior)
-    OR.W D6, D0
+    MOVE.W ESR, D2
+    AND.W #$0001, D2 ;D2 = 000000000000000(C anterior)
+    OR.W D2, D0
     
     MOVE.W D0, ESR  ;ESR = 0000000000000ZN(C anterior)
     
