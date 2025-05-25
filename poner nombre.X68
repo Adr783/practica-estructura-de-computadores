@@ -263,33 +263,47 @@ EINC:
 EXTRAE: ;Extrae a D4 el contenido del eregistro cuyo índice está definido por
         ;el contenido de D3. Para ello utiliza A2 y se multiplica el contenido
         ;de D3 por 4 porque cada instrucción "MOVE.W etiqueta, D4" ocupa 4
-        ;bytes por ser los registros de direccionamiento corto.
-    MULU #4, D3
+        ;bytes por ser los registros de direccionamiento corto y cada
+        ;instrucción "BRA.S FIN_CARGA" ocupa 2 bytes.
+    MULU #6, D3
     MOVEA.L D3, A2
     JMP LISTA_EXTRAE(A2)
-LISTA_EXTRAE
+LISTA_EXTRAE:
     MOVE.W ET0, D4
+    BRA.S FIN_EXTRAE
     MOVE.W ET1, D4
+    BRA.S FIN_EXTRAE
     MOVE.W ER2, D4
+    BRA.S FIN_EXTRAE    
     MOVE.W ER3, D4
+    BRA.S FIN_EXTRAE
     MOVE.W ER4, D4
+    BRA.S FIN_EXTRAE
     MOVE.W ER5, D4
+FIN_EXTRAE:
     RTS
 
 CARGA:  ;Carga el contenido de D4 en el eregistro cuyo índice está definido por
         ;el contenido de D3. Para ello utiliza A2 y se multiplica el contenido
-        ;de D3 por 4 porque cada instrucción "MOVE.W D4, etiqueta" ocupa 4
-        ;bytes por ser los registros de direccionamiento corto.
-    MULU #4, D3
+        ;de D3 por 6 porque cada instrucción "MOVE.W D4, etiqueta" ocupa 4 bytes
+        ;por ser los registros de direccionamiento corto y cada instrucción
+        ;"BRA.S FIN_CARGA" ocupa 2 bytes,
+    MULU #6, D3
     MOVEA.L D3, A2
     JMP LISTA_CARGA(A2)
-LISTA_CARGA
+LISTA_CARGA:
     MOVE.W D4, ET0
+    BRA.S FIN_CARGA
     MOVE.W D4, ET1
+    BRA.S FIN_CARGA
     MOVE.W D4, ER2
+    BRA.S FIN_CARGA
     MOVE.W D4, ER3
+    BRA.S FIN_CARGA
     MOVE.W D4, ER4
+    BRA.S FIN_CARGA
     MOVE.W D4, ER5
+FIN_CARGA:
     RTS
     
 GUARDA_ESR: ;Guarda las flags Z, N y C del registro SR como los tres últimos
