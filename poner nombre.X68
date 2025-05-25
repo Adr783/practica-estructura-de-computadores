@@ -209,9 +209,7 @@ EINC:
 EXTRAE: ;Extrae a D4 el contenido del eregistro cuyo índice está definido por
         ;el contenido de D3. Para ello utiliza A2 y se multiplica el contenido
         ;de D3 por 4 porque cada instrucción "MOVE.W etiqueta, D4" ocupa 4
-        ;bytes por ser los registros direccionamiento corto.
-    MOVE.W D3, -(SP)
-    
+        ;bytes por ser los registros de direccionamiento corto.
     MULU #4, D3
     MOVEA.L D3, A2
     JMP LISTA_EXTRAE(A2)
@@ -222,16 +220,12 @@ LISTA_EXTRAE
     MOVE.W ER3, D4
     MOVE.W ER4, D4
     MOVE.W ER5, D4
-    
-    MOVE.W (SP)+, D3
     RTS
 
 CARGA:  ;Carga el contenido de D4 en el eregistro cuyo índice está definido por
         ;el contenido de D3. Para ello utiliza A2 y se multiplica el contenido
         ;de D3 por 4 porque cada instrucción "MOVE.W D4, etiqueta" ocupa 4
-        ;bytes por ser los registros direccionamiento corto.
-    MOVE.W D3, -(SP)
-        
+        ;bytes por ser los registros de direccionamiento corto.
     MULU #4, D3
     MOVEA.L D3, A2
     JMP LISTA_CARGA(A2)
@@ -242,8 +236,6 @@ LISTA_CARGA
     MOVE.W D4, ER3
     MOVE.W D4, ER4
     MOVE.W D4, ER5
-    
-    MOVE.W (SP)+, D3
     RTS
     
 GUARDA_ESR: ;Guarda el contenido de los 3 últimos bits del registro SR, que 
