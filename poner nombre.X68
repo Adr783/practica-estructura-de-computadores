@@ -30,7 +30,7 @@ FETCH:
 
 	MOVE.W EPC, D0
     	MULU.W #2, D0
-    	ADD.W D0, A0
+    	MOVE.W D0, A0
 	MOVE.W EMEM(A0), EIR
 	
 	ADDQ.W #1, EPC
