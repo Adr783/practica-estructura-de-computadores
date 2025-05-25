@@ -256,7 +256,8 @@ LISTA_CARGA
 GUARDA_ESR: ;Guarda las flags Z, N y C del registro SR como los tres últimos
             ;bits del eregistro ESR. Para ello utiliza D6.
     MOVE.W SR, D6   ;D6 = xxxxxxxxxxxxNZxC
-    MOVE.W D0, -(SP)
+    MOVE.L D0, -(SP)
+    CLR D0
 
     AND.W $000D, D6 ;D6 = 000000000000NZ0C
     
@@ -268,13 +269,14 @@ GUARDA_ESR: ;Guarda las flags Z, N y C del registro SR como los tres últimos
     
     MOVE.W D0, ESR  ;ESR = 0000000000000ZNC
     
-    MOVE.W (SP)+, D0
+    MOVE.L (SP)+, D0
     RTS
     
 GUARDA_ZyN: ;Guarda las flags Z y N del registro SR como los dos últimos bits
             ;del eregistro ESR. Para ello utiliza D6.
     MOVE.W SR, D6   ;D6 = xxxxxxxxxxxxNZxC
-    MOVE.W D0, -(SP)
+    MOVE.L D0, -(SP)
+    CLR D0
 
     AND.W $000C, D6 ;D6 = 000000000000NZ00
     
@@ -290,7 +292,7 @@ GUARDA_ZyN: ;Guarda las flags Z y N del registro SR como los dos últimos bits
     
     MOVE.W D0, ESR  ;ESR = 0000000000000ZN(C anterior)
     
-    MOVE.W (SP)+, D0
+    MOVE.L (SP)+, D0
     RTS
 
     ;--- FSUBR: FIN SUBRUTINAS
