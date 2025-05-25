@@ -312,7 +312,7 @@ GUARDA_ESR: ;Guarda las flags Z, N y C del registro SR como los tres últimos
     MOVE.L D0, -(SP)
     CLR D0
 
-    AND.W $000D, D6 ;D6 = 000000000000NZ0C
+    AND.W #$000D, D6 ;D6 = 000000000000NZ0C
     
     MOVE.W D6, D0
     AND.W #$0008, D0 ;D0 = 000000000000N000
@@ -331,7 +331,7 @@ GUARDA_ZyN: ;Guarda las flags Z y N del registro SR como los dos últimos bits
     MOVE.L D0, -(SP)
     CLR D0
 
-    AND.W $000C, D6 ;D6 = 000000000000NZ00
+    AND.W #$000C, D6 ;D6 = 000000000000NZ00
     
     MOVE.W D6, D0
     AND.W #$0008, D0 ;D0 = 000000000000N000
