@@ -3,38 +3,35 @@
 * Written by : Adrián González Alcalá y Adrián Reina Sorribas
 * Description: Emulador de la BUIBEX
 *-----------------------------------------------------------
-    ORG $1000
-N:	ECU 17 ;numero de componentes de EMEM
-EMEM:   DC.W $A00E,$500B,$C002,$A20F,$500B,$C00B,$E804,$C814,$F7FB
-        DC.W $500B,$4007,$C020,$8010,$0000,$0004,$0003,$0000
-EIR:    DC.W 0 ;eregistro de instruccion
-EPC:    DC.W 0 ;econtador de programa
-ET0:    DC.W 0 ;eregistro T0
-ET1:    DC.W 0 ;eregistro T1
-ER2:    DC.W 0 ;eregistro R2
-ER3:    DC.W 0 ;eregistro R3
-ER4:    DC.W 0 ;eregistro R4
-ER5:    DC.W 0 ;eregistro R5
-ESR:    DC.W 0 ;eregistro de estado (00000000 00000ZNC)
-CODE:   DS.W N ;CODIGO TEMPORAL
+      ORG $1000
+EMEM: DC.W $A00E,$500B,$C002,$A20F,$500B,$C00B,$E804,$C814,$F7FB
+      DC.W $500B,$4007,$C020,$8010,$0000,$0004,$0003,$0000
+EIR:  DC.W 0 ;eregistro de instruccion
+EPC:  DC.W 0 ;econtador de programa
+ET0:  DC.W 0 ;eregistro T0
+ET1:  DC.W 0 ;eregistro T1
+ER2:  DC.W 0 ;eregistro R2
+ER3:  DC.W 0 ;eregistro R3
+ER4:  DC.W 0 ;eregistro R4
+ER5:  DC.W 0 ;eregistro R5
+ESR:  DC.W 0 ;eregistro de estado (00000000 00000ZNC)
 
 START:
-
-
-
+    CLR.W EPC
+    
 FETCH:
     ;--- IFETCH: INICIO FETCH
         ;*** En esta seccion debeis introducir el codigo necesario para cargar
         ;*** en EIR la siguiente instruccion a ejecutar, indicada por el EPC,
 	;*** y dejar listo el EPC para que apunte a la siguiente instruccion
 
-	MOVE.W EPC, D0
-    	MULU.W #2, D0
-    	MOVE.W D0, A0
+    MOVE.W EPC, D0
+    MULU.W #2, D0
+    MOVE.W D0, A0
 	MOVE.W EMEM(A0), EIR
 	
 	ADDQ.W #1, EPC
-
+        
     ;--- FFETCH: FIN FETCH
     
     
@@ -87,46 +84,47 @@ JMPLIST:
 EHLT:
 	SIMHALT
 EJMI:
-	MOVE.W EIR, D3
-    	AND.W $0038, D3
-  	LSR.W #3, D3        
-   	JSR EXTRAE
-   	MOVE.W D4, D5       
-
-   	MOVE.W EIR, D3
-    	AND.W $0007, D3     
-    	JSR EXTRAE          
-
-    	AND.W D5, D4        
-    	NOT.W D4            
-    	JSR GUARDA_ESR
-    	JSR CARGA           
-
-    	BRA FETCH
+	MOVE EIR, D3
+	AND.W #$00FF, D3
+	MOVE.W D3, EPC   ;EPC = 00000000mmmmmmmm
+    BRA FETCH
 EJMZ:
-	MOVE.W EIR, D4
-	AND.W #$0004, D4
-	CMP.W #$0004, D4
-
+    MOVE.W ESR, D3   ;D3 = 0000000000000ZNC
+    BTST #2, D3
+    BNE EJMI         ;Si Z = 1, salta a JMI, si no vuelve al fetch
 	BRA FETCH
 EJMN: 
-	MOVE.W EIR, D4
-	AND.W #$0008, D4
-	CMP.W #$0008, D4
-
+	MOVE.W ESR, D3   ;D3 = 0000000000000ZNC
+    BTST #1, D3
+    BNE EJMI         ;Si N = 1, salta a JMI, si no vuelve al fetch
 	BRA FETCH
 ESTO:
-	
-ELOA:
 	MOVE.W EIR, D3
-	AND.W #$00FF, D3
+	AND.W #$0200, D3
+	LSR.W #8, D3
+	LSR.W #1, D3     ;D3 = 000000000000000j
+    JSR EXTRAE       ;D4 = eregistro j
+    
+    MOVE.W EIR, D3
+	AND.W #$00FF, D3 ;D4 = 00000000mmmmmmmm
+	MULU.W #2, D3    ;Cada posicion de memoria son 2 bytes
+	MOVE.W D3, A3
+	MOVE.W D4, EMEM(A3)    ;eposición memoria mmmmmmmm = D4
 
-	JSR GUARDA_ZyN  
+	BRA FETCH
+ELOA:
+	MOVE.W EIR, D4
+	AND.W #$00FF, D4 ;D4 = 00000000mmmmmmmm
+	MULU.W #2, D4    ;Cada posicion de memoria son 2 bytes
+	MOVE.W D4, A3
+	MOVE.W EMEM(A3), D4  ;D4 = eposición memoria mmmmmmmm
+	JSR GUARDA_ZyN
 
 	MOVE.W EIR, D3
 	AND.W #$0200, D3
-	LSR.W #9, D3 
-	JSR CARGA
+	LSR.W #8, D3
+	LSR.W #1, D3     ;D3 = 000000000000000j
+	JSR CARGA        ;eregistro j = D4
 
 	BRA FETCH
 ETRA:
@@ -250,7 +248,6 @@ EINC:
     JSR CARGA       ;eregistro bbb = D4 + D6
     
     BRA FETCH
-
     ;--- FEXEC: FIN EJECUCION
     
     
@@ -258,7 +255,7 @@ EINC:
     ;--- ISUBR: INICIO SUBRUTINAS
         ;*** Aqui debeis incluir las subrutinas que necesite vuestra solucion
         ;*** SALVO DECOD, que va en la siguiente seccion
-
+    
 EXTRAE: ;Extrae a D4 el contenido del eregistro cuyo índice está definido por
         ;el contenido de D3. Para ello utiliza A2 y se multiplica el contenido
         ;de D3 por 4 porque cada instrucción "MOVE.W etiqueta, D4" ocupa 4
@@ -346,7 +343,7 @@ GUARDA_ZyN: ;Guarda las flags Z y N del registro SR como los dos últimos bits
     
     MOVE.L (SP)+, D0
     RTS
-
+    
     ;--- FSUBR: FIN SUBRUTINAS
     
     
@@ -355,14 +352,16 @@ GUARDA_ZyN: ;Guarda las flags Z y N del registro SR como los dos últimos bits
         ;*** Tras la etiqueta DECOD, debeis implementar la subrutina de 
         ;*** decodificacion, que debera ser de libreria, siguiendo la interfaz
         ;*** especificada en el enunciado
-
 DECOD:
 	MOVE.L D0, -(SP)
+	CLR D0
 
 	MOVE.W 8(SP), D0
 	BTST #15, D0
 	BNE I
-O:
+O:      ;Cada etiqueta O, OO, OI, IIO, ... es la combinación conocida que
+        ;contiene D0 antes de que el programa se dirija a la posición de la
+        ;etiqueta
 	BTST #14, D0
 	BNE OI
 OO:
@@ -439,10 +438,9 @@ IIII:
 FIN_DECOD:
 	MOVE.L (SP)+, D0
 	RTS
-
+	
     ;--- FDECOD: FIN DECOD
     END    START
-
 
 
 *~Font name~Courier New~
